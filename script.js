@@ -1,5 +1,8 @@
-let gameboard = ["X", "X", "X", "", "", "", "", "", ""];
-currentMark = "O";
+// Variables
+let gameboard = ["", "", "", "", "", "", "", "", ""];
+let currentMark = "O";
+let tempX = new Set();
+let tempO = new Set();
 
 // Grabbin DOM
 const playerMark = document.getElementById("player-mark")
@@ -8,7 +11,6 @@ const gameCells = document.getElementsByClassName("game-cell");
 
 // Listeners
 resetBtn.addEventListener("click", () => {
-    // console.log(gameCells);
     for (let i = 0; i < gameCells.length; i++){
         gameCells[i].innerText = "";
     }
@@ -19,11 +21,16 @@ document.querySelectorAll('.game-cell').forEach(item =>{
     item.addEventListener('click', (e) => {
         playerMark.innerText = currentMark;
         e.target.innerText = togglePlayer();
-        let targetID = e.target.id;
+        let targetID = parseInt(e.target.id);
         markBoard(targetID, currentMark);
+        currentMark === "X" ? tempX.add(targetID) : tempO.add(targetID);
+        checkWin();
+        console.log(Array.from(tempX.values()));
+        console.log(Array.from(tempO.values()));
         console.log(gameboard);
     });
 });
+
 
 // Constructor and objects
 function Player (mark) {
@@ -51,7 +58,7 @@ function markBoard(index, currentMark){
 
 function checkWin() {
     const winConditions = [
-        [0, 1, 2],
+        [0, 1, 2], 
         [3, 4, 5],
         [6, 7, 8],
         [0, 3, 6],
@@ -61,27 +68,13 @@ function checkWin() {
         [2, 4, 6],
     ];
 
-    // console.log(winConditions[0][0]);
-    // for (let i of winConditions){
-    //     console.log(i);
-    //     for (let j of i){
-    //         console.log(j);
-    //         console.log(gameboard[j]);
-    //     }
-    // }
+    for (i = 0; i < winConditions.length; i++) {
+        if (tempX.has(winConditions[i][0]) && tempX.has(winConditions[i][1]) && tempX.has(winConditions[i][2])) {
+            console.log("X WINS");
+        }
 
-    function checkX(arrayofIndexes){
-        for (let i of arrayofIndexes){
-            if (gameboard[i] === "X"){
-                console.log(`X is present at index ${[i]}`);
-            }
-            else{
-                console.log(`X not present at index ${[i]}`)
-                break;
-            }
+        if (tempO.has(winConditions[i][0]) && tempO.has(winConditions[i][1]) && tempO.has(winConditions[i][2])) {
+            console.log("O WINS");
         }
     }
-    console.log(checkX(winConditions[0]));
 }
-
-checkWin();
