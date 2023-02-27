@@ -8,27 +8,46 @@ let tempO = new Set();
 const playerMark = document.getElementById("player-mark")
 const resetBtn = document.getElementById("resetBtn");
 const gameCells = document.getElementsByClassName("game-cell");
+const winModal = document.getElementById("modal-container");
+const newGameBtn = document.getElementById("newGameBtn");
+const winnerText = document.getElementById("winner");
 
 // Listeners
 resetBtn.addEventListener("click", () => {
-    for (let i = 0; i < gameCells.length; i++){
-        gameCells[i].innerText = "";
-    }
-    gameboard = ["", "", "", "", "", "", "", "", ""]
+    resetGame();
 });
 
 document.querySelectorAll('.game-cell').forEach(item =>{
     item.addEventListener('click', (e) => {
-        playerMark.innerText = currentMark;
-        e.target.innerText = togglePlayer();
+        //Store the cell ID in a variable
         let targetID = parseInt(e.target.id);
+
+        //Check if the target square is already filled, if so just return
+        if (gameboard[targetID] != ""){
+            console.log("That cell is taken");
+            return;
+        }
+        else{
+        //Setting announcement text to whoevers turn it is (X/O)
+        playerMark.innerText = currentMark;
+        //Setting cell to X or O depending on player
+        e.target.innerText = togglePlayer();
+        //Mark the board at target id with current mark
         markBoard(targetID, currentMark);
+        //Check if mark is X or O and add to proper set
         currentMark === "X" ? tempX.add(targetID) : tempO.add(targetID);
         checkWin();
-        console.log(Array.from(tempX.values()));
-        console.log(Array.from(tempO.values()));
-        console.log(gameboard);
+        // console.log(Array.from(tempX.values()));
+        // console.log(Array.from(tempO.values()));
+        // console.log(gameboard);
+        }
     });
+});
+
+newGameBtn.addEventListener('click', () => {
+    winModal.classList.remove('show');
+    winModal.style.display = "none";
+    resetGame();
 });
 
 
@@ -52,6 +71,15 @@ function togglePlayer(){
     return currentMark;
 }
 
+function resetGame(){
+    for (let i = 0; i < gameCells.length; i++){
+        gameCells[i].innerText = "";
+    }
+    tempX.clear();
+    tempO.clear();
+    gameboard = ["", "", "", "", "", "", "", "", ""]
+}
+
 function markBoard(index, currentMark){
     gameboard[index] = currentMark;
 }
@@ -70,11 +98,17 @@ function checkWin() {
 
     for (i = 0; i < winConditions.length; i++) {
         if (tempX.has(winConditions[i][0]) && tempX.has(winConditions[i][1]) && tempX.has(winConditions[i][2])) {
-            console.log("X WINS");
+            // console.log("X WINS");
+            winModal.style.display = "";
+            winModal.classList.add('show');
+            winnerText.innerText = "X";
         }
 
         if (tempO.has(winConditions[i][0]) && tempO.has(winConditions[i][1]) && tempO.has(winConditions[i][2])) {
-            console.log("O WINS");
+            // console.log("O WINS");
+            winModal.style.display = "";
+            winModal.classList.add('show');
+            winnerText.innerText = "O";
         }
     }
 }
