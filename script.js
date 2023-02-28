@@ -101,14 +101,20 @@ function checkWin() {
             // console.log("X WINS");
             winModal.style.display = "";
             winModal.classList.add('show');
-            winnerText.innerText = "X";
+            winnerText.innerText = "Player X Wins!";
         }
 
         if (tempO.has(winConditions[i][0]) && tempO.has(winConditions[i][1]) && tempO.has(winConditions[i][2])) {
             // console.log("O WINS");
             winModal.style.display = "";
             winModal.classList.add('show');
-            winnerText.innerText = "O";
+            winnerText.innerText = "Player O Wins!";
         }
+    }
+
+    if (!gameboard.includes("")){
+        winModal.style.display = "";
+        winModal.classList.add('show');
+        winnerText.innerText = "Tie Game!";
     }
 }
